@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
 
-function useCurrencyInfo(base = "usd") {
+function useCurrencyInfo(baseCurrency = "USD") {
   const [data, setData] = useState({});
 
   useEffect(() => {
-    fetch(`https://api.exchangerate-api.com/v4/latest/${base}`)
+    fetch(`https://api.exchangerate.host/latest?base=${baseCurrency}`)
       .then((res) => res.json())
-      .then((res) => setData(res.rates))
+      .then((res) => {
+        setData(res.rates || {});
+      })
       .catch((err) => {
-        console.error("Failed to fetch currency info", err);
+        console.error("API fetch failed:", err);
         setData({});
       });
-  }, [base]);
+  }, [baseCurrency]);
 
   return data;
 }
